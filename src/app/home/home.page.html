@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar class="pokedex-header">
+    <ion-title>🔎 Buscar Pokémon</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="pokedex-content">
+  <div class="pokedex-container">
+    <div class="input-section">
+      <ion-item fill="outline" color="medium" class="pokedex-input">
+        <ion-label position="floating">Nombre del Pokémon</ion-label>
+        <ion-input [(ngModel)]="pokemonName" placeholder="Ej: Pikachu" clearInput inputmode="text"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" shape="round" class="pokedex-button" (click)="buscarPokemon()">
+        <ion-icon name="search-outline" slot="start"></ion-icon>
+        Buscar
+      </ion-button>
+
+      <ion-text color="danger" *ngIf="errorMsg" class="error-msg">
+        <p><strong>{{ errorMsg }}</strong></p>
+      </ion-text>
+    </div>
+
+    <div class="pokemon-display" *ngIf="pokemonData">
+      <div class="pokedex-screen">
+        <img [src]="pokemonData.sprites?.front_default" alt="Imagen de {{ pokemonData.name }}" />
+        <h2>{{ pokemonData.name | titlecase }} <span class="pokemon-id">#{{ pokemonData.id }}</span></h2>
+
+        <div class="pokemon-types">
+          <ion-badge *ngFor="let tipo of tiposPokemon.split(', ')" [ngClass]="'type-' + tipo.toLowerCase()">
+            {{ tipo }}
+          </ion-badge>
+        </div>
+
+        <div class="pokemon-info">
+          <p><strong>Peso:</strong> {{ pokemonData.weight }} hectogramos</p>
+          <p><strong>Altura:</strong> {{ pokemonData.height }} decímetros</p>
+          <p><strong>Experiencia base:</strong> {{ pokemonData.base_experience }}</p>
+        </div>
+
+        <div class="pokemon-abilities">
+          <strong>Habilidades:</strong>
+          <span *ngFor="let hab of habilidadesPokemon; let i = index" class="capitalize">
+            {{ hab.ability.name }}<span *ngIf="i < habilidadesPokemon.length - 1">, </span>
+          </span>
+        </div>
+
+        <div class="pokemon-stats">
+          <strong>Estadísticas:</strong>
+          <ul>
+            <li *ngFor="let stat of statsPokemon" class="capitalize">
+              {{ stat.stat.name }}: {{ stat.base_stat }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="pokemon-moves">
+          <strong>Movimientos (5 primeros):</strong>
+          <ul>
+            <li *ngFor="let move of movesPokemon" class="capitalize">
+              {{ move.move.name }}
+            </li>
+          </ul>
+        </div>
+
+        <ion-item lines="none" class="opinion-input">
+          <ion-label position="stacked">Tu opinión</ion-label>
+          <ion-textarea [(ngModel)]="opinion" placeholder="Escribe una reseña u opinión..." auto-grow="true"
+            maxlength="250" counter="true"></ion-textarea>
+        </ion-item>
+
+        <ion-button expand="block" color="success" shape="round" class="save-btn" (click)="guardarEnFirebase()">
+          <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+          Guardar en Firebase
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
